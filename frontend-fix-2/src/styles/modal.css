@@ -1,0 +1,102 @@
+.wkit-dialog__overlay {
+    background: rgba(0, 0, 0, 0.75) !important;
+    position: fixed !important;
+    inset: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  .wkit-dialog__content {
+    background: #1a1a1a !important;
+    border-radius: 16px !important;
+    padding: 24px !important;
+    color: white !important;
+    width: 90% !important;
+    max-width: 360px !important;
+    text-align: center !important;
+  }
+  
+  /* Connecting state */
+  .wkit-connecting__container {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 16px !important;
+    padding: 24px !important;
+  }
+  
+  .wkit-connecting__title {
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+  }
+  
+  .wkit-connecting__subtitle {
+    font-size: 14px !important;
+    color: #888 !important;
+    margin: 0 !important;
+  }
+  
+  /* Wallet options */
+  .wkit-select__container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  
+  .wkit-select-item {
+    display: flex !important;
+    align-items: center !important;
+    padding: 12px !important;
+    gap: 12px !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: background 0.2s !important;
+    background: transparent !important;
+    border: none !important;
+    width: 100% !important;
+    color: white !important;
+  }
+  
+  .wkit-select-item:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  .wkit-select-item__icon {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+  }
+  
+  /* Back button */
+  .wkit-dialog__close {
+    position: absolute !important;
+    top: 16px !important;
+    left: 16px !important;
+    background: none !important;
+    border: none !important;
+    padding: 8px !important;
+    cursor: pointer !important;
+    color: white !important;
+  }
+
+  .wkit-connecting {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .wkit-connecting__logo {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 12px;
+  }
+  
+  .wkit-connecting__description {
+    font-size: 14px;
+    color: #888;
+    margin: 0;
+  }
