@@ -63,6 +63,10 @@ export function WalletContent() {
     return `https://explorer.movementnetwork.xyz/txn/${hash}/userTxnOverview?network=testnet`;
   };
 
+  const getAddressExplorerLink = (address: string) => {
+    return `https://explorer.movementnetwork.xyz/account/${address}?network=testnet`;
+  };
+
   const handleUpdateMessage = async () => {
     if (!wallet.connected || !message) return;
 
@@ -180,7 +184,16 @@ export function WalletContent() {
         <div className="wallet-section">
           <h2 className="section-title">Address</h2>
           <p className="section-text">
-            {wallet.account ? formatAddress(wallet.account.address) : ""}
+            {wallet.account ? (
+              <a
+                href={getAddressExplorerLink(wallet.account.address)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="explorer-link"
+              >
+                {formatAddress(wallet.account.address)}
+              </a>
+            ) : ""}
           </p>
         </div>
 
