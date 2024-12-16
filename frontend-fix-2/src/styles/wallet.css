@@ -1,0 +1,319 @@
+/* Base wallet container styles */
+.wallet-connect-prompt {
+  text-align: center;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.wallet-container {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.wallet-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Section styles */
+.wallet-section {
+  margin-bottom: 0.75rem;
+}
+
+.section-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.section-subtitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin-top: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.section-text {
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Loading states */
+.loading-container {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.loading-spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid #3b82f6;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Messages and status */
+.error-message {
+  font-size: 0.875rem;
+  color: #ef4444;
+}
+
+.balance-text {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+/* Form elements */
+.interaction-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.message-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  transition: border-color 0.2s;
+}
+
+.message-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Custom button variations */
+.submit-button {
+  background-color: #10b981;
+  color: white;
+}
+
+.submit-button:hover:not(.disabled) {
+  background-color: #059669;
+  border-color: #047857;
+}
+
+.sign-button {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.sign-button:hover:not(.disabled) {
+  background-color: #2563eb;
+  border-color: #1d4ed8;
+}
+
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Links */
+.explorer-link {
+  color: #3b82f6;
+  text-decoration: underline;
+}
+
+.explorer-link:hover {
+  color: #2563eb;
+}
+
+/* Results */
+.signature-result {
+  font-size: 0.875rem;
+  margin-top: 0.375rem;
+}
+
+.signature-result.success {
+  color: #10b981;
+}
+
+.signature-result.error {
+  color: #ef4444;
+}
+
+.stored-message {
+  font-size: 0.875rem;
+  word-break: break-all;
+}
+
+/* Root container */
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem;
+  text-align: center;
+}
+
+/* App layout */
+.app-container {
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  padding: 1rem;
+}
+
+.app-content {
+  max-width: 64rem;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Override wallet-kit dropdown styles */
+:root {
+  --wallet-picker-width: 320px;
+  --wallet-picker-height: 400px;
+}
+
+[data-testid="wallet-modal"] {
+  background-color: #ffffff !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-testid="wallet-option"] {
+  padding: 0.75rem !important;
+  border-radius: 6px !important;
+  transition: background-color 0.2s !important;
+}
+
+[data-testid="wallet-option"]:hover {
+  background-color: #f3f4f6 !important;
+}
+
+/* Transaction status */
+.transaction-status {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.375rem;
+}
+
+/* Balance container */
+.balance-container {
+  margin-top: 0.375rem;
+}
+
+/* Section content wrapper */
+.section-content {
+  background-color: #f8fafc;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  margin-top: 0.375rem;
+}
+
+.stored-message-container .loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 0.375rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .wallet-connect-prompt,
+  .wallet-container {
+    background-color: #1a1a1a;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .section-content {
+    background-color: #2a2a2a;
+  }
+
+  .message-input {
+    background-color: #2a2a2a;
+    border-color: #404040;
+    color: #ffffff;
+  }
+
+  .message-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  }
+
+  .section-title,
+  .section-subtitle,
+  .section-text,
+  .loading-text,
+  .transaction-status,
+  .stored-message {
+    color: #e5e7eb;
+  }
+
+  [data-testid="wallet-modal"] {
+    background-color: #1a1a1a !important;
+  }
+
+  [data-testid="wallet-option"]:hover {
+    background-color: #2a2a2a !important;
+  }
+
+  .app-container {
+    background-color: #1a1a1a;
+  }
+
+  .balance-text {
+    color: #e5e7eb;
+  }
+
+  .explorer-link {
+    color: #60a5fa;
+  }
+
+  .explorer-link:hover {
+    color: #3b82f6;
+  }
+
+  .submit-button {
+    background-color: #059669;
+  }
+
+  .submit-button:hover:not(.disabled) {
+    background-color: #047857;
+  }
+
+  .sign-button {
+    background-color: #3b82f6;
+  }
+
+  .sign-button:hover:not(.disabled) {
+    background-color: #2563eb;
+  }
+
+  .header h1 {
+    color: #e5e7eb;
+  }
+}
