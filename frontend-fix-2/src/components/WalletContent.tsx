@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 export function WalletContent() {
   const wallet = useAptosWallet();
-  const { balance, loading, error } = useAptosAccountBalance();
+  const { balance, loading, error, refetch } = useAptosAccountBalance();
   const [signatureResult, setSignatureResult] = useState<string>("");
   const [isSigningMessage, setIsSigningMessage] = useState(false);
   const [transactionStatus, setTransactionStatus] = useState<
@@ -114,6 +114,7 @@ export function WalletContent() {
 
             if (txData.success) {
               await fetchMessage();
+              await refetch();
               return true;
             }
           } catch (error) {
