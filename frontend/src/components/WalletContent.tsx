@@ -18,7 +18,7 @@ export function WalletContent() {
   const MODULE_ADDRESS =
     "0xe69c0875d4e04984cfc02b661d2d61fd12a2835347703b0a21efefab40fd2198";
   const MODULE_NAME = "hello_world_2";
-  const TESTNET_API = "https://aptos.testnet.porto.movementlabs.xyz/v1/";
+  const TESTNET_API = "https://aptos.testnet.porto.movementlabs.xyz/v1";
 
   const formatAddress = (address: string) => {
     if (!address) return "";
@@ -69,11 +69,11 @@ export function WalletContent() {
   };
 
   const getExplorerLink = (hash: string) => {
-    return `https://explorer.movementnetwork.xyz/txn/${hash}/userTxnOverview?network=porto+testnet`;
+    return `https://explorer.movementnetwork.xyz/txn/${hash}/userTxnOverview?network=testnet`;
   };
 
   const getAddressExplorerLink = (address: string) => {
-    return `https://explorer.movementnetwork.xyz/account/${address}?network=porto+testnet`;
+    return `https://explorer.movementnetwork.xyz/account/${address}?network=testnet`;
   };
 
   const handleUpdateMessage = async () => {

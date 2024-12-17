@@ -59,11 +59,11 @@ export function WalletContent() {
   };
 
   const getExplorerLink = (hash: string) => {
-    return `https://explorer.movementnetwork.xyz/txn/${hash}/userTxnOverview?network=porto+testnet`;
+    return `https://explorer.movementnetwork.xyz/txn/${hash}/userTxnOverview?network=testnet`;
   };
 
   const getAddressExplorerLink = (address: string) => {
-    return `https://explorer.movementnetwork.xyz/account/${address}?network=porto+testnet`;
+    return `https://explorer.movementnetwork.xyz/account/${address}?network=testnet`;
   };
 
   const handleUpdateMessage = async () => {
