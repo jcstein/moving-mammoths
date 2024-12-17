@@ -93,7 +93,7 @@ export function WalletContent() {
           typeArguments: [],
           functionArguments: [message],
         },
-      };
+      } as any;
 
       const response = await wallet.signAndSubmitTransaction(payload);
 
