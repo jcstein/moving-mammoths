@@ -236,10 +236,10 @@ export function WalletContent() {
                   <div className="loading-spinner"></div>
                   <span className="loading-text">Loading balance...</span>
                 </div>
-              ) : error ? (
-                <div className="error-message">
-                  Error loading balance: {error.message}
-                </div>
+                ) : error ? (
+                  <div className="error-message">
+                    Error loading balance: {error instanceof Error ? error.message : 'Unknown error'}
+                  </div>
               ) : (
                 <p className="balance-text">
                   {balance !== undefined
