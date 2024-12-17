@@ -82,21 +82,21 @@ export function WalletContent() {
       setTransactionStatus("You need to score at least 30 🦣 to submit a message!");
       return;
     }
-
+  
     try {
       setIsSubmitting(true);
       setTransactionStatus("Submitting transaction...");
-
+  
+      // Updated payload format
       const payload = {
-        payload: {
-          function: `${MODULE_ADDRESS}::${MODULE_NAME}::set_message`,
-          typeArguments: [],
-          functionArguments: [message],
-        },
+        type: "entry_function_payload",
+        function: `${MODULE_ADDRESS}::${MODULE_NAME}::set_message`,
+        type_arguments: [],
+        arguments: [message]
       };
-
+  
       const response = await wallet.signAndSubmitTransaction(payload);
-
+  
       let txHash;
       if (typeof response === "object" && response.status === "Approved") {
         txHash = response.args?.hash;
@@ -237,9 +237,9 @@ export function WalletContent() {
                   <span className="loading-text">Loading balance...</span>
                 </div>
               ) : error ? (
-                <div className="error-message">
-                  Error loading balance: {error.message}
-                </div>
+          <div className="error-message">
+            Error loading balance: {error instanceof Error ? error.message : 'Unknown error'}
+          </div>
               ) : (
                 <p className="balance-text">
                   {balance !== undefined
