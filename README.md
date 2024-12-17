@@ -8,3 +8,5 @@ Follow the instructions in the [move README](./move/README.md) to deploy the Mov
 ## Run the frontend
 
 Follow the instructions in the [frontend README](./frontend/README.md) to run the frontend.
+
+View the frontend at https://gmove-iota.vercel.app/ and the old-frontend at https://gmove-bdue.vercel.app/.
