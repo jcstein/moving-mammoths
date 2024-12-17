@@ -56,7 +56,7 @@ export function GameComponent({ onScoreUpdate, onMessageUpdate }: GameComponentP
     <div className="game-wrapper">
       <div id="game-container" style={{ border: '2px solid #333', marginBottom: '20px' }}></div>
       <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-        Current Score: {localScore} / 30 required
+        Current Score: {localScore} 🦣 / 30🦣 required
       </div>
       <p className="game-instructions">
         Click the text to add 10 🦣! You need 30 🦣 to submit a message.

@@ -102,13 +102,15 @@
 
 .message-input {
   width: 100%;
-  padding: 0;
+  padding: 0.5rem;
   border: none;
+  text-align: center;
   background: transparent;
   font-size: 0.875rem;
   color: inherit;
   cursor: default;
-  pointer-events: none; /* Prevent any interaction */
+  pointer-events: none;
+  font-family: 'Press Start 2P', sans-serif;
 }
 
 .message-input:focus {
@@ -116,7 +118,6 @@
   box-shadow: none;
 }
 
-/* Custom button variations */
 .submit-button {
   background-color: #10b981;
   color: white;

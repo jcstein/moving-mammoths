@@ -79,7 +79,7 @@ export function WalletContent() {
   const handleUpdateMessage = async () => {
     if (!wallet.connected || !message || !isMessageSigned) return;
     if (gameScore < 30) {
-      setTransactionStatus("You need to score at least 30 🦣 to submit a message!");
+      setTransactionStatus("You need to score at least 30 🦣 to submit a score!");
       return;
     }
 
@@ -195,13 +195,12 @@ export function WalletContent() {
           <div className="wallet-section">
             <h2 className="section-title">Game</h2>
             {isMessageSigned && <GameComponent onScoreUpdate={handleScoreUpdate} onMessageUpdate={handleMessageUpdate} />}
-            {isMessageSigned && <p className="score-display">Current Score: {gameScore} 🦣</p>}
             <p className="game-requirement">
               {!isMessageSigned
-                ? "Sign the message to unlock the game and message submission!"
+                ? "Sign the message to unlock the game and score submission!"
                 : gameScore < 30
-                ? `Score ${30 - gameScore} more 🦣 to unlock message submission!`
-                : "Message submission unlocked! 🎉"}
+                ? `Score ${30 - gameScore} more 🦣 to unlock score submission!`
+                : "Score submission unlocked! 🎉"}
             </p>
           </div>
         </div>
@@ -271,14 +270,13 @@ export function WalletContent() {
             <div className="interaction-container">
             <h2 className="section-title">Score submission</h2>
             <input
-              type="text"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Enter a message"
-              className="message-input"
-              disabled={true}
-              style={{ fontFamily: "monospace" }}
-            />
+                type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Enter a message"
+                className="message-input"
+                disabled={true}
+              />
               <button
                 onClick={handleUpdateMessage}
                 disabled={isSubmitting || !message || gameScore < 30}
