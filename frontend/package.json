@@ -13,6 +13,7 @@
     "@aptos-labs/ts-sdk": "^1.33.1",
     "@mysten/sui": "^1.17.0",
     "@razorlabs/wallet-kit": "^0.5.0",
+    "phaser": "^3.60.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

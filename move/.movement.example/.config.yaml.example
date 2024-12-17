@@ -1,0 +1,9 @@
+---
+profiles:
+  default:
+    network: Testnet
+    private_key: "YOUR_PRIVATE_KEY"
+    public_key: "YOUR_PUBLIC_KEY"
+    account: "YOUR_ACCOUNT_ADDRESS"
+    rest_url: "https://aptos.testnet.bardock.movementlabs.xyz/v1/"
+    faucet_url: "https://faucet.testnet.bardock.movementlabs.xyz/"
