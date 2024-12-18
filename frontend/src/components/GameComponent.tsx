@@ -64,8 +64,8 @@ export function GameComponent({
         graphics.fillRect(0, 0, 600, 420);
 
         // Add sun with glow effect
-        const sunGlow = this.add.circle(500, 80, 40, 0xffffff, 0.3);
-        const sun = this.add.circle(500, 80, 25, 0xffffff, 1);
+        this.add.circle(500, 80, 40, 0xffffff, 0.3);
+        this.add.circle(500, 80, 25, 0xffffff, 1);
 
         // Add distant mountains silhouette (darker turquoise)
         graphics.fillStyle(0x20b2aa);
