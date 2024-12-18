@@ -7,7 +7,9 @@ export function WalletContent() {
   const { balance, loading, error, refetch } = useAptosAccountBalance();
   const [signatureResult, setSignatureResult] = useState<string>("");
   const [isSigningMessage, setIsSigningMessage] = useState(false);
-  const [transactionStatus, setTransactionStatus] = useState<string | JSX.Element>("");
+  const [transactionStatus, setTransactionStatus] = useState<
+    string | JSX.Element
+  >("");
   const [message, setMessage] = useState("");
   const [storedMessage, setStoredMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -79,7 +81,9 @@ export function WalletContent() {
   const handleUpdateMessage = async () => {
     if (!wallet.connected || !message || !isMessageSigned) return;
     if (gameScore < 30) {
-      setTransactionStatus("You need to score at least 30 🦣 to submit a score!");
+      setTransactionStatus(
+        "You need to score at least 30 🦣 to submit a score!",
+      );
       return;
     }
 
@@ -113,7 +117,7 @@ export function WalletContent() {
               rel="noopener noreferrer"
               className="explorer-link"
             >
-              {txHash}
+              {txHash.slice(0, 6)}...{txHash.slice(-4)}
             </a>
           </>,
         );
@@ -194,13 +198,18 @@ export function WalletContent() {
         <div className="game-container">
           <div className="wallet-section">
             <h2 className="section-title">Game</h2>
-            {isMessageSigned && <GameComponent onScoreUpdate={handleScoreUpdate} onMessageUpdate={handleMessageUpdate} />}
+            {isMessageSigned && (
+              <GameComponent
+                onScoreUpdate={handleScoreUpdate}
+                onMessageUpdate={handleMessageUpdate}
+              />
+            )}
             <p className="game-requirement">
               {!isMessageSigned
                 ? "Sign the message to unlock the game and score submission!"
                 : gameScore < 30
-                ? `Score ${30 - gameScore} more 🦣 to unlock score submission!`
-                : "Score submission unlocked! 🎉"}
+                  ? `Score ${30 - gameScore} more 🦣 to unlock score submission!`
+                  : "Score submission unlocked! 🎉"}
             </p>
           </div>
         </div>
@@ -223,7 +232,9 @@ export function WalletContent() {
                 >
                   {formatAddress(wallet.account.address)}
                 </a>
-              ) : ""}
+              ) : (
+                ""
+              )}
             </p>
           </div>
 
@@ -235,10 +246,11 @@ export function WalletContent() {
                   <div className="loading-spinner"></div>
                   <span className="loading-text">Loading balance...</span>
                 </div>
-                ) : error ? (
-                  <div className="error-message">
-                    Error loading balance: {error instanceof Error ? error.message : 'Unknown error'}
-                  </div>
+              ) : error ? (
+                <div className="error-message">
+                  Error loading balance:{" "}
+                  {error instanceof Error ? error.message : "Unknown error"}
+                </div>
               ) : (
                 <p className="balance-text">
                   {balance !== undefined
@@ -268,8 +280,8 @@ export function WalletContent() {
 
           <div className="wallet-section">
             <div className="interaction-container">
-            <h2 className="section-title">Score submission</h2>
-            <input
+              <h2 className="section-title">Score submission</h2>
+              <input
                 type="text"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
