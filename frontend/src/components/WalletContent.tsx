@@ -259,23 +259,29 @@ export function WalletContent() {
                 </p>
               )}
             </div>
-            <h2 className="section-title">Sign in to play</h2>
-            <div className="signing-container">
-              <button
-                onClick={handleSignMessage}
-                disabled={isSigningMessage}
-                className={`sign-button ${isSigningMessage ? "disabled" : ""}`}
-              >
-                {isSigningMessage ? "Signing..." : "Sign Message"}
-              </button>
-              {signatureResult && (
-                <p
-                  className={`signature-result ${signatureResult.includes("Error") ? "error" : "success"}`}
-                >
-                  {signatureResult}
-                </p>
-              )}
-            </div>
+            {!isMessageSigned && (
+              <>
+                <h2 className="section-title">Sign in to play</h2>
+                <div className="signing-container">
+                  <button
+                    onClick={handleSignMessage}
+                    disabled={isSigningMessage}
+                    className={`sign-button ${isSigningMessage ? "disabled" : ""}`}
+                  >
+                    {isSigningMessage ? "Signing..." : "Sign Message"}
+                  </button>
+                  {signatureResult && (
+                    <p
+                      className={`signature-result ${
+                        signatureResult.includes("Error") ? "error" : "success"
+                      }`}
+                    >
+                      {signatureResult}
+                    </p>
+                  )}
+                </div>
+              </>
+            )}
           </div>
 
           <div className="wallet-section">
