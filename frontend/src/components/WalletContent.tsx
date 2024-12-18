@@ -285,7 +285,7 @@ export function WalletContent() {
                 type="text"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Enter a message"
+                placeholder="Play to post score"
                 className="message-input"
                 disabled={true}
               />
