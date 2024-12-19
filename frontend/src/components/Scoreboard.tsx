@@ -1,22 +1,34 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+
+interface Score {
+  player: string;
+  score: number;
+  message: string;
+}
+
+interface ScoreboardData {
+  data: {
+    scores: Score[];
+  };
+}
 
 const Scoreboard = () => {
-  const [scores, setScores] = useState([]);
+  const [scores, setScores] = useState<Score[]>([]);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const MODULE_ADDRESS =
     "0xe69c0875d4e04984cfc02b661d2d61fd12a2835347703b0a21efefab40fd2198";
   const MODULE_NAME = "hello_world_6";
   const TESTNET_API = "https://aptos.testnet.porto.movementlabs.xyz/v1";
 
-  const formatAddress = (address) => {
+  const formatAddress = (address: string): string => {
     if (!address) return "";
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
-  const getAddressExplorerLink = (address) => {
+  const getAddressExplorerLink = (address: string): string => {
     return `https://explorer.movementnetwork.xyz/account/${address}?network=testnet`;
   };
 
@@ -37,16 +49,17 @@ const Scoreboard = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data = await response.json();
-        if (data && data.data && data.data.scores) {
+        const data = (await response.json()) as ScoreboardData;
+        if (data?.data?.scores) {
           const sortedScores = [...data.data.scores].sort(
             (a, b) => b.score - a.score,
           );
           setScores(sortedScores);
         }
-      } catch (error) {
-        console.error("Error fetching scoreboard:", error);
-        setError(error.message);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+        console.error("Error fetching scoreboard:", err);
+        setError(errorMessage);
       } finally {
         setIsInitialLoading(false);
         setIsRefreshing(false);
