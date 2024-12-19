@@ -1,5 +1,6 @@
 import { AptosWalletProvider, AptosConnectButton } from "@razorlabs/wallet-kit";
 import { WalletContent } from "./components/WalletContent";
+import Scoreboard from "./components/Scoreboard";
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
             <AptosConnectButton />
           </div>
           <WalletContent />
+          <Scoreboard />
         </div>
       </div>
     </AptosWalletProvider>

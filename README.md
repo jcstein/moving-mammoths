@@ -17,5 +17,5 @@ View the frontend at https://gmove-iota.vercel.app/.
 - [ ] Add more game mechanics
 - [ ] Add more animations
 - [ ] Improve UI/UX
-- [ ] Add scoreboard to contract
-- [ ] Add scoreboard to UI
+- [x] Add scoreboard to contract
+- [x] Add scoreboard to UI

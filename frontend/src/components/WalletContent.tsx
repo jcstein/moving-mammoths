@@ -12,6 +12,7 @@ export function WalletContent() {
   >("");
   const [message, setMessage] = useState("");
   const [storedMessage, setStoredMessage] = useState("");
+  const [storedScore, setStoredScore] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingMessage, setIsLoadingMessage] = useState(false);
   const [gameScore, setGameScore] = useState(0);
@@ -19,7 +20,7 @@ export function WalletContent() {
 
   const MODULE_ADDRESS =
     "0xe69c0875d4e04984cfc02b661d2d61fd12a2835347703b0a21efefab40fd2198";
-  const MODULE_NAME = "hello_world_2";
+  const MODULE_NAME = "hello_world_6";
   const TESTNET_API = "https://aptos.testnet.porto.movementlabs.xyz/v1";
 
   const formatAddress = (address: string) => {
@@ -32,6 +33,7 @@ export function WalletContent() {
       fetchMessage();
     } else {
       setStoredMessage("");
+      setStoredScore(0);
     }
   }, [wallet.connected]);
 
@@ -39,15 +41,17 @@ export function WalletContent() {
     setGameScore(score);
   };
 
-  const handleMessageUpdate = (message: string) => {
-    setMessage(message);
-  };
+  // const handleMessageUpdate = (message: string) => {
+  //   setMessage(message);
+  // };
 
   const fetchMessage = async () => {
     if (!wallet.connected || !wallet.account) return;
 
     try {
       setIsLoadingMessage(true);
+
+      // Fetch user's score
       const resourceUrl = `${TESTNET_API}/accounts/${wallet.account.address}/resource/${MODULE_ADDRESS}::${MODULE_NAME}::MessageHolder`;
       const response = await fetch(resourceUrl);
 
@@ -57,14 +61,18 @@ export function WalletContent() {
 
       const data = await response.json();
 
-      if (data && data.data && data.data.message) {
+      if (data && data.data) {
         setStoredMessage(data.data.message);
+        setStoredScore(data.data.score);
       } else {
         setStoredMessage("No message found");
+        setStoredScore(0);
       }
+
     } catch (error: any) {
       console.error("Error fetching data:", error.message);
       setStoredMessage("Error fetching message. have you played, anon?");
+      setStoredScore(0);
     } finally {
       setIsLoadingMessage(false);
     }
@@ -93,9 +101,9 @@ export function WalletContent() {
 
       const payload = {
         payload: {
-          function: `${MODULE_ADDRESS}::${MODULE_NAME}::set_message`,
+          function: `${MODULE_ADDRESS}::${MODULE_NAME}::set_message_and_score`,
           typeArguments: [],
-          functionArguments: [message],
+          functionArguments: [message, gameScore.toString()],
         },
       } as any;
 
@@ -201,7 +209,7 @@ export function WalletContent() {
             {isMessageSigned && (
               <GameComponent
                 onScoreUpdate={handleScoreUpdate}
-                onMessageUpdate={handleMessageUpdate}
+                // onMessageUpdate={handleMessageUpdate}
               />
             )}
             <p className="game-requirement">
@@ -291,14 +299,16 @@ export function WalletContent() {
                 type="text"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Play to post score"
+                placeholder="Your name"
                 className="message-input"
-                disabled={true}
+                disabled={isSubmitting || !isMessageSigned || gameScore <30 }
               />
               <button
                 onClick={handleUpdateMessage}
-                disabled={isSubmitting || !message || gameScore < 30}
-                className={`submit-button ${isSubmitting || gameScore < 30 ? "disabled" : ""}`}
+                disabled={isSubmitting || !message.trim() || gameScore < 30}
+                className={`submit-button ${
+                  isSubmitting || gameScore < 30 ? "disabled" : ""
+                }`}
               >
                 {isSubmitting ? "Submitting..." : "Update score"}
               </button>
@@ -307,18 +317,21 @@ export function WalletContent() {
               )}
               {storedMessage && (
                 <div className="stored-message-container">
-                  <h3 className="section-subtitle">Saved score:</h3>
                   {isLoadingMessage ? (
                     <div className="loading-container">
                       <div className="loading-spinner"></div>
                       <span className="loading-text">Loading score...</span>
                     </div>
                   ) : (
-                    <p className="stored-message">{storedMessage}</p>
+                    <>
+                      <p className="stored-message">Name: {storedMessage}</p>
+                      <p className="stored-score">
+                        Last score: {storedScore} 🦣
+                      </p>
+                    </>
                   )}
                 </div>
               )}
-              <div>hi</div>
             </div>
           </div>
         </div>

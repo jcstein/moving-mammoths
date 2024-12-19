@@ -3,13 +3,9 @@ import Phaser from "phaser";
 
 interface GameComponentProps {
   onScoreUpdate: (score: number) => void;
-  onMessageUpdate: (message: string) => void;
 }
 
-export function GameComponent({
-  onScoreUpdate,
-  onMessageUpdate,
-}: GameComponentProps) {
+export function GameComponent({ onScoreUpdate }: GameComponentProps) {
   const [localScore, setLocalScore] = useState(0);
   const gameRef = useRef<Phaser.Game | null>(null);
   const isAnimatingRef = useRef(false);
@@ -170,7 +166,6 @@ export function GameComponent({
 
           if (newScore >= 30) {
             this.text?.setText(`Score: ${newScore} - keep going!`);
-            onMessageUpdate(`Score: ${newScore} 🦣`);
 
             // Play celebration animation
             this.mammoth?.play("whacked");
