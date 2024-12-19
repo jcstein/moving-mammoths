@@ -11,3 +11,11 @@ Follow the instructions in the [move README](./move/README.md) to deploy the Mov
 Follow the instructions in the [frontend README](./frontend/README.md) to run the frontend.
 
 View the frontend at https://gmove-iota.vercel.app/.
+
+## Todos
+
+- [ ] Add more game mechanics
+- [ ] Add more animations
+- [ ] Improve UI/UX
+- [ ] Add scoreboard to contract
+- [ ] Add scoreboard to UI

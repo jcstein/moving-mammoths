@@ -318,6 +318,7 @@ export function WalletContent() {
                   )}
                 </div>
               )}
+              <div>hi</div>
             </div>
           </div>
         </div>
