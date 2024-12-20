@@ -132,7 +132,7 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
         this.mammoth.play("idle");
 
         // Initialize cursor keys
-        this.cursors = this.input.keyboard.createCursorKeys();
+        this.cursors = this.input?.keyboard?.createCursorKeys();
 
         // Add score text with higher depth
         this.scoreText = this.add.text(16, 16, 'Score: 0', {
@@ -179,11 +179,8 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
       }
 
       update() {
-        if (this.gameOver) {
-          // Check for spacebar press to restart
-          if (this.cursors?.space.isDown && this.cursors.space.getDuration() < 100) {
-            this.restart();
-          }
+        if (this.gameOver && this.cursors?.space?.isDown && this.cursors.space.getDuration() < 100) {
+          this.restart();
           return;
         }
 
@@ -194,10 +191,10 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
         this.mammoth.y += this.velocity;
 
         // Flap when spacebar is pressed
-        if (this.cursors.space.isDown && this.cursors.space.getDuration() < 100) {
+        if (this.cursors?.space?.isDown && this.cursors.space.getDuration() < 100) {
           this.velocity = -10;
-          this.mammoth.play('flick', true);
-          this.mammoth.once('animationcomplete', () => {
+          this.mammoth?.play('flick', true);
+          this.mammoth?.once('animationcomplete', () => {
             this.mammoth?.play('idle', true);
           });
         }
