@@ -14,8 +14,12 @@ View the frontend at https://gmove-iota.vercel.app/.
 
 ## Todos
 
-- [ ] Add more game mechanics
-- [ ] Add more animations
-- [ ] Improve UI/UX
+- [x] Add more game mechanics
+- [x] Add more animations
+- [x] Improve UI/UX
+- [x] flip around the mammoth
+- [ ] fix css overlapping
+- [x] shrink it down a lot
+- [ ] make gems fall out of sky for mamo to get
 - [x] Add scoreboard to contract
 - [x] Add scoreboard to UI

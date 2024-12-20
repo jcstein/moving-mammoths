@@ -1,6 +1,7 @@
 import { useAptosWallet, useAptosAccountBalance } from "@razorlabs/wallet-kit";
 import { useState, useEffect } from "react";
 import { GameComponent } from "./GameComponent";
+import glassybellSound from '/glassy-bell.wav'
 
 export function WalletContent() {
   const wallet = useAptosWallet();
@@ -28,22 +29,32 @@ export function WalletContent() {
     return `${address.slice(0, 6)}....${address.slice(-4)}`;
   };
 
+  // Check localStorage when wallet connects
   useEffect(() => {
+    const checkStoredSignature = () => {
+      if (wallet.connected && wallet.account?.address) {
+        const storedSignature = localStorage.getItem(`signature_state_${wallet.account.address}`);
+        if (storedSignature === 'true') {
+          setIsMessageSigned(true);
+          setSignatureResult("Message signed successfully!");
+        }
+      }
+    };
+
+    checkStoredSignature();
     if (wallet.connected) {
       fetchMessage();
     } else {
       setStoredMessage("");
       setStoredScore(0);
+      setIsMessageSigned(false);
+      setSignatureResult("");
     }
-  }, [wallet.connected]);
+  }, [wallet.connected, wallet.account?.address]);
 
   const handleScoreUpdate = (score: number) => {
     setGameScore(score);
   };
-
-  // const handleMessageUpdate = (message: string) => {
-  //   setMessage(message);
-  // };
 
   const fetchMessage = async () => {
     if (!wallet.connected || !wallet.account) return;
@@ -112,6 +123,10 @@ export function WalletContent() {
       let txHash;
       if (typeof response === "object" && response.status === "Approved") {
         txHash = response.args?.hash;
+
+        // Play the ding sound on successful submission
+        const dingAudio = new Audio(glassybellSound);
+        dingAudio.play();
       }
 
       if (txHash) {
@@ -180,17 +195,31 @@ export function WalletContent() {
       if (!result) {
         setSignatureResult("Message signing failed verification");
         setIsMessageSigned(false);
+        localStorage.removeItem(`signature_state_${wallet.account.address}`);
       } else {
         setSignatureResult("Message signed successfully!");
         setIsMessageSigned(true);
+        localStorage.setItem(`signature_state_${wallet.account.address}`, 'true');
       }
     } catch (e) {
       console.error("signMessage failed", e);
       setSignatureResult("Error signing in, anon");
+      if (wallet.account?.address) {
+        localStorage.removeItem(`signature_state_${wallet.account.address}`);
+      }
     } finally {
       setIsSigningMessage(false);
     }
   };
+
+  // Add cleanup for wallet disconnection
+  useEffect(() => {
+    return () => {
+      if (!wallet.connected && wallet.account?.address) {
+        localStorage.removeItem(`signature_state_${wallet.account.address}`);
+      }
+    };
+  }, [wallet.connected, wallet.account?.address]);
 
   if (!wallet.connected) {
     return (
@@ -205,11 +234,9 @@ export function WalletContent() {
       <div className="wallet-content">
         <div className="game-container">
           <div className="wallet-section">
-            <h2 className="section-title">Game</h2>
             {isMessageSigned && (
               <GameComponent
                 onScoreUpdate={handleScoreUpdate}
-                // onMessageUpdate={handleMessageUpdate}
               />
             )}
             <p className="game-requirement">
@@ -269,7 +296,7 @@ export function WalletContent() {
             </div>
             {!isMessageSigned && (
               <>
-                <h2 className="section-title">Sign in to play</h2>
+                <h2 className="section-title">🔒 Sign in to play</h2>
                 <div className="signing-container">
                   <button
                     onClick={handleSignMessage}
@@ -301,7 +328,8 @@ export function WalletContent() {
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Your name"
                 className="message-input"
-                disabled={isSubmitting || !isMessageSigned || gameScore <30 }
+                disabled={isSubmitting || !isMessageSigned || gameScore < 30}
+                maxLength={20}
               />
               <button
                 onClick={handleUpdateMessage}

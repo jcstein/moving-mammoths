@@ -66,3 +66,30 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.tab-navigation {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.tab-button {
+  margin: 0 10px;
+  padding: 10px 15px;
+  border: none;
+  background-color: #3b82f6;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.tab-button:hover {
+  background-color: #2563eb;
+  transform: scale(1.05);
+}
+
+.tab-button.active {
+  background-color: #1d4ed8; /* Darker shade for active tab */
+  font-weight: bold;
+}
