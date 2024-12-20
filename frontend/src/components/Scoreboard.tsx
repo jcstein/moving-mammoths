@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import '../styles/Scoreboard.css'
+import '../styles/scoreboard.css'
 
 interface Score {
   player: string;
@@ -116,7 +116,7 @@ const Scoreboard = () => {
             {scores.length === 0 && (
               <tr>
                 <td colSpan={4} className="empty-message">
-                  No scores yet. Be the first to tame the mammoth! 🦣
+                  No scores yet. Be the first to move the mammoth! 🦣
                 </td>
               </tr>
             )}
