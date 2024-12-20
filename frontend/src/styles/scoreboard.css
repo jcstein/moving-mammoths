@@ -1,0 +1,154 @@
+.scoreboard-container {
+    background-color: white;
+    padding: 1.5rem;
+    font-family: "Press Start 2P", cursive;
+    margin-top: 1rem;
+}
+
+.scoreboard-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.scoreboard-header h2 {
+    font-size: 1rem;
+    margin: 0;
+    font-weight: normal;
+    letter-spacing: 1px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}
+
+/* Column headers */
+th {
+    text-align: left;
+    font-weight: normal;
+    color: #374151;
+    padding: 0.75rem 2rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+/* Align score header to right */
+th:nth-child(3) {
+    text-align: right;
+}
+
+td {
+    padding: 0.75rem 2rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+/* Rank column */
+td:first-child, 
+th:first-child {
+    padding-left: 2rem;
+    width: 80px;
+}
+
+/* Player column */
+td:nth-child(2),
+th:nth-child(2) {
+    width: 180px;
+}
+
+/* Score column - right aligned */
+td:nth-child(3),
+th:nth-child(3) {
+    text-align: right;
+    width: 120px;
+}
+
+/* Name column */
+td:nth-child(4),
+th:nth-child(4) {
+    padding-left: 3rem;
+}
+
+/* Row hover effect */
+tr:hover td {
+    background-color: #f9fafb;
+}
+
+.explorer-link {
+    color: rgb(59, 130, 246);
+    text-decoration: none;
+}
+
+.explorer-link:hover {
+    text-decoration: underline;
+}
+
+/* Loading states */
+.loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+.loading-spinner {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid #3b82f6;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loading-text {
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}
+
+.error-message {
+    color: #ef4444;
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+    .scoreboard-container {
+        background-color: #1a1a1a;
+        color: #e5e7eb;
+    }
+
+    th {
+        color: #9ca3af;
+        border-bottom-color: #374151;
+    }
+
+    td {
+        border-bottom-color: #1f2937;
+    }
+
+    tr:hover td {
+        background-color: #1f2937;
+    }
+
+    .explorer-link {
+        color: #60a5fa;
+    }
+
+    .explorer-link:hover {
+        color: #3b82f6;
+    }
+}
