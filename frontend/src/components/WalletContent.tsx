@@ -99,9 +99,9 @@ export function WalletContent() {
 
   const handleUpdateMessage = async () => {
     if (!wallet.connected || !message || !isMessageSigned) return;
-    if (gameScore < 30) {
+    if (gameScore < 5) {
       setTransactionStatus(
-        "You need to score at least 30 🦣 to submit a score!",
+        "You need to score at least 5 🦣 to submit a score!",
       );
       return;
     }
@@ -242,8 +242,8 @@ export function WalletContent() {
             <p className="game-requirement">
               {!isMessageSigned
                 ? "Sign the message to unlock the game and score submission!"
-                : gameScore < 30
-                  ? `Score ${30 - gameScore} more 🦣 to unlock score submission!`
+                : gameScore < 5
+                  ? `Score ${5 - gameScore} more 🦣 to unlock score submission!`
                   : "Score submission unlocked! 🎉"}
             </p>
           </div>
@@ -328,14 +328,14 @@ export function WalletContent() {
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Your name"
                 className="message-input"
-                disabled={isSubmitting || !isMessageSigned || gameScore < 30}
+                disabled={isSubmitting || !isMessageSigned || gameScore < 5}
                 maxLength={20}
               />
               <button
                 onClick={handleUpdateMessage}
-                disabled={isSubmitting || !message.trim() || gameScore < 30}
+                disabled={isSubmitting || !message.trim() || gameScore < 5}
                 className={`submit-button ${
-                  isSubmitting || gameScore < 30 ? "disabled" : ""
+                  isSubmitting || gameScore < 5 ? "disabled" : ""
                 }`}
               >
                 {isSubmitting ? "Submitting..." : "Update score"}

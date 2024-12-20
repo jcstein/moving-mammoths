@@ -11,7 +11,7 @@ export default function App() {
       <div className="app-container">
         <div className="app-content">
           <div className="header">
-            <h1>Movement mammoth game demo 🦣</h1>
+            <h1>Moving mammoths 🦣</h1>
             <AptosConnectButton />
           </div>
           <div className="tab-navigation">

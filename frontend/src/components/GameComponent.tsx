@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import Phaser from "phaser";
+import unlockSound from '/unlock.wav';
 
 interface GameComponentProps {
   onScoreUpdate: (score: number) => void;
@@ -8,22 +9,37 @@ interface GameComponentProps {
 export function GameComponent({ onScoreUpdate }: GameComponentProps) {
   const [localScore, setLocalScore] = useState(0);
   const gameRef = useRef<Phaser.Game | null>(null);
-  const isAnimatingRef = useRef(false);
   const scoreRef = useRef(0);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     scoreRef.current = localScore;
   }, [localScore]);
 
   useEffect(() => {
+    audioRef.current = new Audio(unlockSound);
+
     class GameScene extends Phaser.Scene {
       private mammoth?: Phaser.GameObjects.Sprite;
-      private text?: Phaser.GameObjects.Text;
-
+      private pipes: Phaser.GameObjects.Rectangle[];
+      private score: number;
+      private scoreText?: Phaser.GameObjects.Text;
+      private gameOver: boolean;
+      private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
+      private velocity: number;
+      private gameWidth: number;
+      private gameHeight: number;
+      
       constructor() {
         super({ key: "GameScene" });
+        this.pipes = [];
+        this.score = 0;
+        this.gameOver = false;
+        this.velocity = 0;
+        this.gameWidth = 600;
+        this.gameHeight = 420;
       }
-
+      
       preload() {
         // Load mammoth animations
         for (let i = 0; i <= 19; i++) {
@@ -42,63 +58,44 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
           );
         }
 
-        for (let i = 0; i <= 15; i++) {
+        for (let i = 0; i <= 4; i++) {
           const frameNum = i.toString().padStart(3, "0");
           this.load.image(
-            `whacked_${i}`,
-            `/key_frames/__mammoth_whacked_${frameNum}.png`,
+            `die_${i}`,
+            `/key_frames/__mammoth_die_${frameNum}.png`,
           );
         }
+
+        // Load tentacle plant parts
+        const colors = ['blue', 'green', 'orange', 'pink', 'red', 'yellow'];
+        colors.forEach(color => {
+          this.load.image(
+            `tentacle_top_${color}`,
+            `/plants/tentacle_plant/tentacle_plant_part_1_${color}.png`
+          );
+          this.load.image(
+            `tentacle_middle_${color}`,
+            `/plants/tentacle_plant/tentacle_plant_part_2_${color}.png`
+          );
+          this.load.image(
+            `tentacle_bottom_${color}`,
+            `/plants/tentacle_plant/tentacle_plant_part_3_${color}.png`
+          );
+        });
       }
 
       create() {
-        // Create a vibrant gradient background matching the alien planet style
-        const graphics = this.add.graphics();
+        // Create a simple blue background
+        this.add.rectangle(0, 0, this.gameWidth, this.gameHeight, 0x87CEEB)
+          .setOrigin(0, 0);
 
-        // Sky gradient (turquoise to lighter turquoise)
-        graphics.fillGradientStyle(0x40e0d0, 0x40e0d0, 0x7fffd4, 0x7fffd4, 1);
-        graphics.fillRect(0, 0, 600, 420);
+        // Create mammoth and flip it horizontally
+        this.mammoth = this.add.sprite(100, this.gameHeight / 2, "idle_0");
+        this.mammoth.setScale(0.1);  // Reduced size for better gameplay
+        this.mammoth.setDepth(1);
+        this.mammoth.setFlipX(true);
 
-        // Add sun with glow effect
-        this.add.circle(500, 80, 40, 0xffffff, 0.3);
-        this.add.circle(500, 80, 25, 0xffffff, 1);
-
-        // Add distant mountains silhouette (darker turquoise)
-        graphics.fillStyle(0x20b2aa);
-        graphics.beginPath();
-        graphics.moveTo(0, 260); // Raised mountain height
-        graphics.lineTo(100, 200);
-        graphics.lineTo(200, 230);
-        graphics.lineTo(300, 190);
-        graphics.lineTo(400, 220);
-        graphics.lineTo(500, 180);
-        graphics.lineTo(600, 210);
-        graphics.lineTo(600, 420);
-        graphics.lineTo(0, 420);
-        graphics.closePath();
-        graphics.fill();
-
-        // Add decorative alien plants
-        const addPlant = (x: number, y: number, scale: number) => {
-          const plant = new Phaser.Geom.Circle(x, y, 15 * scale);
-          graphics.fillStyle(0xff69b4); // Pink color for plants
-          graphics.fillCircleShape(plant);
-
-          // Add stem
-          graphics.lineStyle(4, 0x2e8b57);
-          graphics.beginPath();
-          graphics.moveTo(x, y + 15 * scale);
-          graphics.lineTo(x, y + 30 * scale);
-          graphics.stroke();
-        };
-
-        // Add various plants at higher positions
-        addPlant(50, 250, 1);
-        addPlant(150, 230, 1.2);
-        addPlant(400, 240, 1);
-        addPlant(500, 220, 1.3);
-
-        // Create mammoth animations
+        // Create animations
         const idleFrames = Array.from({ length: 20 }, (_, i) => ({
           key: `idle_${i}`,
         }));
@@ -107,15 +104,10 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
           key: `flick_${i}`,
         }));
 
-        const whackedFrames = Array.from({ length: 16 }, (_, i) => ({
-          key: `whacked_${i}`,
+        const dieFrames = Array.from({ length: 5 }, (_, i) => ({
+          key: `die_${i}`,
         }));
 
-        // Create the mammoth sprite - positioned higher up
-        this.mammoth = this.add.sprite(300, 200, "idle_0");
-        this.mammoth.setScale(0.5);
-
-        // Create the animations
         this.anims.create({
           key: "idle",
           frames: idleFrames,
@@ -131,57 +123,185 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
         });
 
         this.anims.create({
-          key: "whacked",
-          frames: whackedFrames,
-          frameRate: 24,
+          key: "die",
+          frames: dieFrames,
+          frameRate: 12,
           repeat: 0,
         });
 
-        // Start playing idle animation
         this.mammoth.play("idle");
 
-        this.text = this.add.text(20, 20, "Click the mammoth!", {
-          fontSize: "18px",
-          color: "#fff",
-          stroke: "#000",
-          strokeThickness: 2,
-        });
+        // Initialize cursor keys
+        this.cursors = this.input.keyboard.createCursorKeys();
 
-        this.mammoth.setInteractive();
+        // Add score text with higher depth
+        this.scoreText = this.add.text(16, 16, 'Score: 0', {
+          fontSize: '32px',
+          color: '#000'
+        }).setDepth(1000); // Ensures score appears above other elements
 
-        const handleClick = async () => {
-          if (isAnimatingRef.current) return;
-          isAnimatingRef.current = true;
+        // Create initial pipes
+        this.createPipes();
 
-          const newScore = scoreRef.current + 10;
-          setLocalScore(newScore);
-          onScoreUpdate(newScore);
+        // Start the game
+        this.gameOver = false;
+        this.velocity = 0;
+      }
 
-          // Play head flick animation
-          this.mammoth?.play("flick");
+      createPipes() {
+        const gap = 250;
+        const pipeWidth = 50;
+        const minHeight = 50;
+        const maxHeight = this.gameHeight - gap - minHeight;
+        const topHeight = Phaser.Math.Between(minHeight, maxHeight);
+        
+        // Adjust x position based on the last pipe's position
+        let x = this.gameWidth + pipeWidth;
+        if (this.pipes.length > 0) {
+          const lastPipe = this.pipes[this.pipes.length - 1];
+          // Add some spacing between pipe pairs
+          x = Math.max(x, lastPipe.x + 300);
+        }
 
-          await new Promise((resolve) => {
-            this.mammoth?.once("animationcomplete", resolve);
+        // Create top pipe
+        const topPipe = this.add.rectangle(x, topHeight / 2, pipeWidth, topHeight, 0x00FF00);
+        
+        // Create bottom pipe
+        const bottomPipe = this.add.rectangle(
+          x,
+          topHeight + gap + (this.gameHeight - (topHeight + gap)) / 2,
+          pipeWidth,
+          this.gameHeight - (topHeight + gap),
+          0x00FF00
+        );
+
+        this.pipes.push(topPipe, bottomPipe);
+      }
+
+      update() {
+        if (this.gameOver) {
+          // Check for spacebar press to restart
+          if (this.cursors?.space.isDown && this.cursors.space.getDuration() < 100) {
+            this.restart();
+          }
+          return;
+        }
+
+        if (!this.mammoth || !this.cursors) return;
+
+        // Apply gravity
+        this.velocity += 0.5;
+        this.mammoth.y += this.velocity;
+
+        // Flap when spacebar is pressed
+        if (this.cursors.space.isDown && this.cursors.space.getDuration() < 100) {
+          this.velocity = -10;
+          this.mammoth.play('flick', true);
+          this.mammoth.once('animationcomplete', () => {
+            this.mammoth?.play('idle', true);
           });
+        }
 
-          if (newScore >= 30) {
-            this.text?.setText(`Score: ${newScore} - keep going!`);
+        // Move pipes
+        for (let i = 0; i < this.pipes.length; i++) {
+          const pipe = this.pipes[i];
+          pipe.x -= 3;
 
-            // Play celebration animation
-            this.mammoth?.play("whacked");
-            await new Promise((resolve) => {
-              this.mammoth?.once("animationcomplete", resolve);
-            });
-          } else {
-            this.text?.setText(`Score: ${newScore} - Keep going!`);
+          // Check for collision
+          if (this.mammoth && this.checkCollision(this.mammoth, pipe)) {
+            this.gameOver = true;
+            this.mammoth.play('die');
+            return;
           }
 
-          // Return to idle
-          this.mammoth?.play("idle");
-          isAnimatingRef.current = false;
-        };
+          // Add score when passing pipes (check when mammoth passes the right edge of pipes)
+          if (this.mammoth && pipe.x + pipe.width < this.mammoth.x && !pipe.getData('scored')) {
+            // Only increment score for one pipe in the pair (top pipe)
+            if (i % 2 === 0) {
+              this.score += 1;
+              if (this.scoreText) {
+                this.scoreText.setText('Score: ' + this.score);
+              }
+              setLocalScore(this.score);
+              onScoreUpdate(this.score);
+              // Mark both pipes in the pair as scored
+              pipe.setData('scored', true);
+              if (this.pipes[i + 1]) {
+                this.pipes[i + 1].setData('scored', true);
+              }
+            }
+          }
 
-        this.mammoth.on("pointerdown", handleClick);
+          // Remove pipes that are off screen
+          if (pipe.x < -pipe.width) {
+            pipe.destroy();
+            this.pipes.splice(i, 1);
+            i--;
+          }
+        }
+
+        // Create new pipes
+        if (this.pipes.length < this.getMaxPipes()) {
+          this.createPipes();
+        }
+
+        // Check if mammoth is out of bounds
+        if (this.mammoth.y < 0 || this.mammoth.y > this.gameHeight) {
+          this.gameOver = true;
+          this.mammoth.play('die');
+        }
+      }
+
+      getMaxPipes() {
+        // Start with 4 pipes (2 pairs) and add more based on score
+        // Every 5 points adds another pair of pipes, up to a maximum of 12 pipes (6 pairs)
+        const basePipes = 4;
+        const additionalPairs = Math.floor(this.score / 5);
+        const maxPipes = Math.min(basePipes + (additionalPairs * 2), 12);
+        return maxPipes;
+      }
+
+      checkCollision(mammoth: Phaser.GameObjects.Sprite, pipe: Phaser.GameObjects.Rectangle) {
+        const mammothBounds = mammoth.getBounds();
+        const pipeBounds = pipe.getBounds();
+        
+        // Create a smaller hitbox for the mammoth (30% of original size)
+        const hitboxScale = 0.3;
+        const mammothHitbox = new Phaser.Geom.Rectangle(
+          mammothBounds.x + mammothBounds.width * (1 - hitboxScale) / 2,
+          mammothBounds.y + mammothBounds.height * (1 - hitboxScale) / 2,
+          mammothBounds.width * hitboxScale,
+          mammothBounds.height * hitboxScale
+        );
+
+        return Phaser.Geom.Intersects.RectangleToRectangle(mammothHitbox, pipeBounds);
+      }
+
+      restart() {
+        // Reset game state
+        this.gameOver = false;
+        this.score = 0;
+        if (this.scoreText) {
+          this.scoreText.setText('Score: 0');
+        }
+        
+        // Reset mammoth position and velocity
+        if (this.mammoth) {
+          this.mammoth.y = this.gameHeight / 2;
+          this.mammoth.play('idle');
+        }
+        this.velocity = 0;
+        
+        // Clear existing pipes
+        this.pipes.forEach(pipe => pipe.destroy());
+        this.pipes = [];
+        
+        // Create new initial pipes
+        this.createPipes();
+        
+        // Reset score in React component
+        setLocalScore(0);
+        onScoreUpdate(0);
       }
     }
 
@@ -191,6 +311,13 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
       width: 600,
       height: 420,
       scene: GameScene,
+      physics: {
+        default: 'arcade',
+        arcade: {
+          gravity: { y: 0 },
+          debug: false
+        }
+      }
     };
 
     try {
@@ -211,11 +338,12 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
         style={{ border: "2px solid #333", marginBottom: "20px" }}
       ></div>
       <div style={{ textAlign: "center", marginBottom: "10px" }}>
-        Current Score: {localScore} / 30 required
+        Score: {localScore}
       </div>
       <p className="game-instructions">
-        Click the mammoth to add 10 points! You need 30 points to submit a
-        score.
+        Press SPACE to flap! Avoid the pipes and try to get the highest score possible.
+        {localScore > 0 && <br />}
+        {localScore > 0 && <span>Game Over! Press SPACE to restart.</span>}
       </p>
     </div>
   );
