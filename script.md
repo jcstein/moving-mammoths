@@ -1,5 +1,9 @@
 "Hey everyone, I'm Josh, Developer Advocate at Celestia Labs. Today we'll dive in and learn how I built this game."
 
+Our videos have subtitles in multiple languages; click below for supported languages, and please let us know in the comments if your language is not supported. If you enjoyed this video, subscribe to our channel and give it a thumbs up.
+
+I built moving mammoths for the Mammothathon, the 2025 Celestia hackathon. It's a demo project you can learn from and use as a starting point for your own projects.
+
 [5 second clip/montage of game]
 
 This game is a demo for the Mammothon, the 2025 Celestia hackathon. The Mammothon is all about encouraging people to build in the Celestia ecosystem and this project focuses on building on Movement.

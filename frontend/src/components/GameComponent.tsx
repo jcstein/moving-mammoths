@@ -1,6 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import Phaser from "phaser";
 import unlockSound from '/unlock.wav';
+import footstepsSound from '/footsteps.wav';
+import backgroundNoise from '/rustle-2.wav';
+import thudSound from '/thud.wav';
 
 interface GameComponentProps {
   onScoreUpdate: (score: number) => void;
@@ -8,9 +11,13 @@ interface GameComponentProps {
 
 export function GameComponent({ onScoreUpdate }: GameComponentProps) {
   const [localScore, setLocalScore] = useState(0);
+  const [isGameOver, setIsGameOver] = useState(false);
   const gameRef = useRef<Phaser.Game | null>(null);
   const scoreRef = useRef(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const footstepsRef = useRef<HTMLAudioElement | null>(null);
+  const backgroundMusicRef = useRef<HTMLAudioElement | null>(null);
+  const thudRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     scoreRef.current = localScore;
@@ -18,6 +25,17 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
 
   useEffect(() => {
     audioRef.current = new Audio(unlockSound);
+    footstepsRef.current = new Audio(footstepsSound);
+    backgroundMusicRef.current = new Audio(backgroundNoise);
+    thudRef.current = new Audio(thudSound);
+
+    if (backgroundMusicRef.current) {
+      backgroundMusicRef.current.loop = true;
+      backgroundMusicRef.current.volume = 0.3;
+      backgroundMusicRef.current.play().catch(error => {
+        console.error("Error playing background music:", error);
+      });
+    }
 
     class GameScene extends Phaser.Scene {
       private mammoth?: Phaser.GameObjects.Sprite;
@@ -183,69 +201,102 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
           this.restart();
           return;
         }
-
+      
         if (!this.mammoth || !this.cursors) return;
-
-        // Apply gravity
-        this.velocity += 0.5;
-        this.mammoth.y += this.velocity;
-
-        // Flap when spacebar is pressed
-        if (this.cursors?.space?.isDown && this.cursors.space.getDuration() < 100) {
-          this.velocity = -10;
-          this.mammoth?.play('flick', true);
-          this.mammoth?.once('animationcomplete', () => {
-            this.mammoth?.play('idle', true);
-          });
-        }
-
-        // Move pipes
-        for (let i = 0; i < this.pipes.length; i++) {
-          const pipe = this.pipes[i];
-          pipe.x -= 3;
-
-          // Check for collision
-          if (this.mammoth && this.checkCollision(this.mammoth, pipe)) {
+      
+        // Only apply gravity if game is not over
+        if (!this.gameOver) {
+          this.velocity += 0.5;
+          this.mammoth.y += this.velocity;
+        
+          // Check boundaries with adjusted height for visual death point
+          const visualHeight = this.mammoth.height * this.mammoth.scale * 0.3; // Reduced to 30% for lower death point
+          if (this.mammoth.y < 0 || this.mammoth.y + visualHeight >= this.gameHeight) {
             this.gameOver = true;
             this.mammoth.play('die');
+            setIsGameOver(true);
+            if (thudRef.current) {
+              thudRef.current.play();
+            }
+            // Keep mammoth very close to bottom when dying
+            if (this.mammoth.y + visualHeight > this.gameHeight) {
+              this.mammoth.y = this.gameHeight - (visualHeight * 1.1); // Small offset to keep visible
+            }
+            this.velocity = 0;
             return;
           }
-
-          // Add score when passing pipes (check when mammoth passes the right edge of pipes)
-          if (this.mammoth && pipe.x + pipe.width < this.mammoth.x && !pipe.getData('scored')) {
-            // Only increment score for one pipe in the pair (top pipe)
-            if (i % 2 === 0) {
-              this.score += 1;
-              if (this.scoreText) {
-                this.scoreText.setText('Score: ' + this.score);
+        
+          // Move mammoth up when spacebar is pressed
+          if (this.cursors?.space?.isDown && this.cursors.space.getDuration() < 100) {
+            this.velocity = -10;
+            // Reset and play the footsteps sound
+            if (footstepsRef.current) {
+              footstepsRef.current.currentTime = 0;
+              footstepsRef.current.play();
+            }
+            this.mammoth?.play('flick', true);
+            this.mammoth?.once('animationcomplete', () => {
+              if (!this.gameOver) {
+                this.mammoth?.play('idle', true);
               }
-              setLocalScore(this.score);
-              onScoreUpdate(this.score);
-              // Mark both pipes in the pair as scored
-              pipe.setData('scored', true);
-              if (this.pipes[i + 1]) {
-                this.pipes[i + 1].setData('scored', true);
+            });
+          }
+        
+          // Handle pipes only if game is not over
+          for (let i = 0; i < this.pipes.length; i++) {
+            const pipe = this.pipes[i];
+            pipe.x -= 3;
+        
+            // Check for collision
+            if (this.checkCollision(this.mammoth, pipe)) {
+              this.gameOver = true;
+              this.mammoth.play('die');
+              setIsGameOver(true);
+              if (thudRef.current) {
+                thudRef.current.play();
+              }
+              // Stop horizontal movement
+              pipe.x = pipe.x;  // Freeze pipe position
+              // Optional: Add a small delay before allowing restart
+              this.time.delayedCall(1000, () => {
+                this.velocity = 0;  // Stop vertical movement after animation
+              });
+              return;  // Only return if there's a collision
+            }
+        
+            // Only increment score if game is not over and mammoth is within bounds
+            if (!this.gameOver && this.mammoth && pipe.x + pipe.width < this.mammoth.x && !pipe.getData('scored')) {
+              // Only increment score for one pipe in the pair (top pipe)
+              if (i % 2 === 0) {
+                const previousScore = this.score;
+                this.score += 10;
+                if (this.scoreText) {
+                  this.scoreText.setText('Score: ' + this.score);
+                }
+                if (previousScore < 50 && this.score >= 50) {
+                  audioRef.current?.play();
+                }
+                setLocalScore(this.score);
+                onScoreUpdate(this.score);
+                pipe.setData('scored', true);
+                if (this.pipes[i + 1]) {
+                  this.pipes[i + 1].setData('scored', true);
+                }
               }
             }
+        
+            // Remove pipes that are off screen
+            if (pipe.x < -pipe.width) {
+              pipe.destroy();
+              this.pipes.splice(i, 1);
+              i--;
+            }
           }
-
-          // Remove pipes that are off screen
-          if (pipe.x < -pipe.width) {
-            pipe.destroy();
-            this.pipes.splice(i, 1);
-            i--;
+      
+          // Create new pipes
+          if (this.pipes.length < this.getMaxPipes()) {
+            this.createPipes();
           }
-        }
-
-        // Create new pipes
-        if (this.pipes.length < this.getMaxPipes()) {
-          this.createPipes();
-        }
-
-        // Check if mammoth is out of bounds
-        if (this.mammoth.y < 0 || this.mammoth.y > this.gameHeight) {
-          this.gameOver = true;
-          this.mammoth.play('die');
         }
       }
 
@@ -299,6 +350,7 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
         // Reset score in React component
         setLocalScore(0);
         onScoreUpdate(0);
+        setIsGameOver(false);
       }
     }
 
@@ -326,6 +378,16 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
     } catch (error) {
       console.error("Error initializing Phaser:", error);
     }
+    return () => {
+      if (backgroundMusicRef.current) {
+        backgroundMusicRef.current.pause();
+        backgroundMusicRef.current.currentTime = 0;
+      }
+      if (thudRef.current) {
+        thudRef.current.pause();
+        thudRef.current.currentTime = 0;
+      }
+    };
   }, []);
 
   return (
@@ -338,9 +400,9 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
         Score: {localScore}
       </div>
       <p className="game-instructions">
-        Press SPACE to flap! Avoid the pipes and try to get the highest score possible.
-        {localScore > 0 && <br />}
-        {localScore > 0 && <span>Game Over! Press SPACE to restart.</span>}
+        { !isGameOver && "Press SPACE to move up! Avoid the pipes and try to get the highest score possible."}
+        {isGameOver && <br />}
+        {isGameOver && <span>Game Over! Press SPACE to restart.</span>}
       </p>
     </div>
   );
