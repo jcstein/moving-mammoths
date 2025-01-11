@@ -47,6 +47,9 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
       private velocity: number;
       private gameWidth: number;
       private gameHeight: number;
+      private farMountains?: Phaser.GameObjects.TileSprite;
+      private midMountains?: Phaser.GameObjects.TileSprite;
+      private foreMountains?: Phaser.GameObjects.TileSprite;
       
       constructor() {
         super({ key: "GameScene" });
@@ -84,6 +87,15 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
           );
         }
 
+        // Add whacked animation frames
+        for (let i = 0; i <= 9; i++) {
+          const frameNum = i.toString().padStart(3, "0");
+          this.load.image(
+            `whacked_${i}`,
+            `/key_frames/__mammoth_whacked_${frameNum}.png`,
+          );
+        }
+
         // Load tentacle plant parts
         const colors = ['blue', 'green', 'orange', 'pink', 'red', 'yellow'];
         colors.forEach(color => {
@@ -100,12 +112,69 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
             `/plants/tentacle_plant/tentacle_plant_part_3_${color}.png`
           );
         });
+
+        this.load.image('sky', '/background/sky_colour.png');
+        this.load.image('mountains-far', '/background/farground_mountains.png');
+        this.load.image('mountains-mid', '/background/midground_mountains.png');
+        this.load.image('mountains-fore', '/background/foreground.png');
       }
 
       create() {
-        // Create a simple blue background
-        this.add.rectangle(0, 0, this.gameWidth, this.gameHeight, 0x87CEEB)
-          .setOrigin(0, 0);
+        // Base sky layer
+        this.add.image(0, 0, 'sky')
+          .setOrigin(0, 0)
+          .setDisplaySize(this.gameWidth, this.gameHeight)
+          .setDepth(-3);
+
+        // Create tiling sprites for mountains
+        this.farMountains = this.add.tileSprite(
+          0,
+          this.gameHeight - 100,
+          this.gameWidth,
+          300,
+          'mountains-far'
+        )
+          .setOrigin(0, 1)
+          .setDepth(-2);
+
+        this.midMountains = this.add.tileSprite(
+          0,
+          this.gameHeight - 50,
+          this.gameWidth,
+          250,
+          'mountains-mid'
+        )
+          .setOrigin(0, 1)
+          .setDepth(-1);
+
+        this.foreMountains = this.add.tileSprite(
+          0,
+          this.gameHeight,
+          this.gameWidth,
+          150,
+          'mountains-fore'
+        )
+          .setOrigin(0, 1)
+          .setDepth(-0.5);
+
+        // Create a duplicate of each layer for seamless scrolling
+        this.add.image(this.gameWidth, 0, 'mountains-far')
+          .setOrigin(0, 1)
+          .setY(this.gameHeight - 100)
+          .setDisplaySize(this.gameWidth, 300)
+          .setDepth(-2);
+
+        this.add.image(this.gameWidth, 0, 'mountains-mid')
+          .setOrigin(0, 1)
+          .setY(this.gameHeight - 50)
+          .setDisplaySize(this.gameWidth, 250)
+          .setDepth(-1);
+
+        this.add.image(this.gameWidth, 0, 'mountains-fore')
+          .setOrigin(0, 1)
+          .setY(this.gameHeight)
+          .setDisplaySize(this.gameWidth, 150)
+          .setDepth(-0.5);
 
         // Create mammoth and flip it horizontally
         this.mammoth = this.add.sprite(100, this.gameHeight / 2, "idle_0");
@@ -126,6 +195,10 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
           key: `die_${i}`,
         }));
 
+        const whackedFrames = Array.from({ length: 10 }, (_, i) => ({
+          key: `whacked_${i}`,
+        }));
+
         this.anims.create({
           key: "idle",
           frames: idleFrames,
@@ -144,6 +217,13 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
           key: "die",
           frames: dieFrames,
           frameRate: 12,
+          repeat: 0,
+        });
+
+        this.anims.create({
+          key: "whacked",
+          frames: whackedFrames,
+          frameRate: 24,
           repeat: 0,
         });
 
@@ -182,7 +262,8 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
         }
 
         // Create top pipe
-        const topPipe = this.add.rectangle(x, topHeight / 2, pipeWidth, topHeight, 0x00FF00);
+        const topPipe = this.add.rectangle(x, topHeight / 2, pipeWidth, topHeight, 0x00FF00)
+          .setDepth(0);
         
         // Create bottom pipe
         const bottomPipe = this.add.rectangle(
@@ -191,12 +272,27 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
           pipeWidth,
           this.gameHeight - (topHeight + gap),
           0x00FF00
-        );
+        ).setDepth(0);
 
         this.pipes.push(topPipe, bottomPipe);
       }
 
       update() {
+        if (!this.gameOver) {
+          // Move backgrounds using tilePosition
+          if (this.farMountains) {
+            this.farMountains.tilePositionX += 0.5;
+          }
+          
+          if (this.midMountains) {
+            this.midMountains.tilePositionX += 1;
+          }
+          
+          if (this.foreMountains) {
+            this.foreMountains.tilePositionX += 1.5;
+          }
+        }
+
         if (this.gameOver && this.cursors?.space?.isDown && this.cursors.space.getDuration() < 100) {
           this.restart();
           return;
@@ -213,7 +309,11 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
           const visualHeight = this.mammoth.height * this.mammoth.scale * 0.3; // Reduced to 30% for lower death point
           if (this.mammoth.y < 0 || this.mammoth.y + visualHeight >= this.gameHeight) {
             this.gameOver = true;
-            this.mammoth.play('die');
+            // Play whacked animation first
+            this.mammoth.play('whacked');
+            this.mammoth.once('animationcomplete', () => {
+              this.mammoth.play('die');
+            });
             setIsGameOver(true);
             if (thudRef.current) {
               thudRef.current.play();
@@ -250,7 +350,11 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
             // Check for collision
             if (this.checkCollision(this.mammoth, pipe)) {
               this.gameOver = true;
-              this.mammoth.play('die');
+              // Play whacked animation first
+              this.mammoth.play('whacked');
+              this.mammoth.once('animationcomplete', () => {
+                this.mammoth.play('die');
+              });
               setIsGameOver(true);
               if (thudRef.current) {
                 thudRef.current.play();
