@@ -22,5 +22,5 @@ View the frontend at https://gmove-iota.vercel.app/.
 - [x] shrink it down a lot
 - [x] Add scoreboard to contract
 - [x] Add scoreboard to UI
-- [ ] add a background from assets
+- [x] add a background from assets
 - [ ] add plants as pipes for the game (craters, etc.)
