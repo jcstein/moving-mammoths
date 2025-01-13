@@ -481,6 +481,10 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
       parent: "game-container",
       width: 600,
       height: 420,
+      scale: {
+        mode: Phaser.Scale.NONE,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+      },
       scene: GameScene,
       physics: {
         default: 'arcade',
@@ -520,7 +524,13 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
           border: "2px solid #333", 
           marginBottom: "20px",
           width: "600px",
-          margin: "0 auto"
+          height: "420px",
+          margin: "0 auto",
+          boxSizing: "border-box",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          overflow: "hidden"
         }}
       ></div>
       <p className="game-instructions">
