@@ -310,10 +310,14 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
           if (this.mammoth.y < 0 || this.mammoth.y + visualHeight >= this.gameHeight) {
             this.gameOver = true;
             // Play whacked animation first
-            this.mammoth.play('whacked');
-            this.mammoth.once('animationcomplete', () => {
-              this.mammoth.play('die');
-            });
+            if (this.mammoth) {
+              this.mammoth.play('whacked');
+              this.mammoth.once('animationcomplete', () => {
+                if (this.mammoth) {
+                  this.mammoth.play('die');
+                }
+              });
+            }
             setIsGameOver(true);
             if (thudRef.current) {
               thudRef.current.play();
@@ -351,10 +355,14 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
             if (this.checkCollision(this.mammoth, pipe)) {
               this.gameOver = true;
               // Play whacked animation first
-              this.mammoth.play('whacked');
-              this.mammoth.once('animationcomplete', () => {
-                this.mammoth.play('die');
-              });
+              if (this.mammoth) {
+                this.mammoth.play('whacked');
+                this.mammoth.once('animationcomplete', () => {
+                  if (this.mammoth) {
+                    this.mammoth.play('die');
+                  }
+                });
+              }
               setIsGameOver(true);
               if (thudRef.current) {
                 thudRef.current.play();
@@ -498,7 +506,12 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
     <div className="game-wrapper">
       <div
         id="game-container"
-        style={{ border: "2px solid #333", marginBottom: "20px" }}
+        style={{ 
+          border: "2px solid #333", 
+          marginBottom: "20px",
+          width: "600px",
+          margin: "0 auto"
+        }}
       ></div>
       <div style={{ textAlign: "center", marginBottom: "10px" }}>
         Score: {localScore}
