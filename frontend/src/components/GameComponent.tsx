@@ -523,9 +523,6 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
           margin: "0 auto"
         }}
       ></div>
-      <div style={{ textAlign: "center", marginBottom: "10px" }}>
-        Score: {localScore}
-      </div>
       <p className="game-instructions">
         { !isGameOver && "Press SPACE to move up! Avoid the pipes and try to get the highest score possible."}
         {isGameOver && <br />}
