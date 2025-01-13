@@ -247,25 +247,23 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
       }
 
       createPipes() {
-        const gap = 250;
+        const gap = this.getGapSize();
         const pipeWidth = 50;
         const minHeight = 50;
         const maxHeight = this.gameHeight - gap - minHeight;
         const topHeight = Phaser.Math.Between(minHeight, maxHeight);
         
-        // Adjust x position based on the last pipe's position
         let x = this.gameWidth + pipeWidth;
         if (this.pipes.length > 0) {
           const lastPipe = this.pipes[this.pipes.length - 1];
-          // Add some spacing between pipe pairs
-          x = Math.max(x, lastPipe.x + 300);
+          // Reduce spacing between pipes as score increases
+          const pipeSpacing = Math.max(250, 300 - Math.floor(this.score / 50) * 10);
+          x = Math.max(x, lastPipe.x + pipeSpacing);
         }
 
-        // Create top pipe
         const topPipe = this.add.rectangle(x, topHeight / 2, pipeWidth, topHeight, 0x00FF00)
           .setDepth(0);
         
-        // Create bottom pipe
         const bottomPipe = this.add.rectangle(
           x,
           topHeight + gap + (this.gameHeight - (topHeight + gap)) / 2,
@@ -349,7 +347,7 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
           // Handle pipes only if game is not over
           for (let i = 0; i < this.pipes.length; i++) {
             const pipe = this.pipes[i];
-            pipe.x -= 3;
+            pipe.x -= this.getGameSpeed();
         
             // Check for collision
             if (this.checkCollision(this.mammoth, pipe)) {
@@ -463,6 +461,18 @@ export function GameComponent({ onScoreUpdate }: GameComponentProps) {
         setLocalScore(0);
         onScoreUpdate(0);
         setIsGameOver(false);
+      }
+
+      private getGameSpeed(): number {
+        // Increase speed by 0.5 every 50 points, starting at 3
+        return 3 + Math.floor(this.score / 50) * 0.5;
+      }
+
+      private getGapSize(): number {
+        // Decrease gap size by 10 every 50 points, with a minimum of 150
+        const baseGap = 250;
+        const reduction = Math.floor(this.score / 50) * 10;
+        return Math.max(150, baseGap - reduction);
       }
     }
 
