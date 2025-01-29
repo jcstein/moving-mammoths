@@ -1,4 +1,4 @@
-# Movement game example
+# Moving mammoths - Movement game example
 
 This is a simple game example for the Movement network.
 
