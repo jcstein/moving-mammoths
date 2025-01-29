@@ -42,12 +42,12 @@ profiles:
 
 ```
 [package]
-name = "YOUR_MODULE_NAME"  # Change this to your desired name
+name = "your_module_name"  # Change this to your desired name
 version = "1.0.0"
 authors = []
 
 [addresses]
-YOUR_MODULE_NAME = "YOUR_ACCOUNT_ADDRESS"  # Use your wallet address and module name
+your_module_name = "YOUR_ACCOUNT_ADDRESS"  # Use your wallet address and module name
 
 [dependencies.AptosFramework]
 git = "https://github.com/aptos-labs/aptos-core.git"
@@ -98,10 +98,10 @@ npm install
 
 ```
 const MODULE_ADDRESS = "YOUR_MODULE_ADDRESS";
-const MODULE_NAME = "YOUR_MODULE_NAME";
+const MODULE_NAME = "your_module_name";
 ```
 
-Replace `YOUR_MODULE_ADDRESS` with your module address and `YOUR_MODULE_NAME` with your module name. Example:
+Replace `YOUR_MODULE_ADDRESS` with your module address and `your_module_name` with your module name. Example:
 
 ```
 const MODULE_ADDRESS = "0xe69c0875d4e04984cfc02b661d2d61fd12a2835347703b0a21efefab40fd2198";
