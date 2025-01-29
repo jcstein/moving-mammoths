@@ -30,6 +30,15 @@ export default function App() {
           </div>
           {activeTab === "game" && <WalletContent />}
           {activeTab === "scoreboard" && <Scoreboard />}
+          <footer className="footer">
+            <a 
+              href="https://github.com/jcstein/moving-mammoths"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View source and tutorial on GitHub
+            </a>
+          </footer>
         </div>
       </div>
     </AptosWalletProvider>

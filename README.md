@@ -2,15 +2,9 @@
 
 This is a simple game example for the Movement network.
 
-## Deploy the Movement module
+## Tutorial
 
-Follow the instructions in the [move README](./move/README.md) to deploy the Movement module.
-
-## Run the frontend
-
-Follow the instructions in the [frontend README](./frontend/README.md) to run the frontend.
-
-View the frontend at https://moving-mammoths.vercel.app/.
+See the [Tutorial.md](./Tutorial.md) for a step-by-step guide on how to deploy your own version of this game.
 
 ## Todos
 
