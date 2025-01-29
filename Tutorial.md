@@ -1,5 +1,7 @@
 # Moving Mammoths game tutorial
 
+[View the overview on YouTube](https://youtu.be/3bYnlqMphXQ?list=PLdI4HWwFLH1fymNR9GkejhD707ycGEyC7)
+
 ## Prerequisites
 
 - Node.js installed
