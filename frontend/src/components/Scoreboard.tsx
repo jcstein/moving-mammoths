@@ -19,7 +19,7 @@ const Scoreboard = () => {
   const [error, setError] = useState<string | null>(null);
 
   const MODULE_ADDRESS = "0xe69c0875d4e04984cfc02b661d2d61fd12a2835347703b0a21efefab40fd2198";
-  const MODULE_NAME = "hello_world_6";
+  const MODULE_NAME = "moving_mammoths";
   const TESTNET_API = "https://aptos.testnet.porto.movementlabs.xyz/v1";
 
   const formatAddress = (address: string): string => {

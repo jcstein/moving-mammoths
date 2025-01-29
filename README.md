@@ -10,7 +10,7 @@ Follow the instructions in the [move README](./move/README.md) to deploy the Mov
 
 Follow the instructions in the [frontend README](./frontend/README.md) to run the frontend.
 
-View the frontend at https://gmove-iota.vercel.app/.
+View the frontend at https://moving-mammoths.vercel.app/.
 
 ## Todos
 
@@ -24,3 +24,4 @@ View the frontend at https://gmove-iota.vercel.app/.
 - [x] Add scoreboard to UI
 - [x] add a background from assets
 - [ ] add plants as pipes for the game (craters, etc.)
+- [ ] fix UI of razor wallet

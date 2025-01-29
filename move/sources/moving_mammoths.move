@@ -1,4 +1,4 @@
-module hello_world_6::hello_world_6 {
+module moving_mammoths::moving_mammoths {
     use std::string;
     use std::signer;
     use std::vector;
