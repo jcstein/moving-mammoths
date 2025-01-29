@@ -4,7 +4,7 @@
 
 - Node.js installed
 - Git installed
-- Nightly wallet installed
+- [Nightly wallet](https://nightly.app) installed
 - Basic knowledge of TypeScript and React
 - [Movement CLI installed](https://docs.movementnetwork.xyz/devs/movementcli)
 
