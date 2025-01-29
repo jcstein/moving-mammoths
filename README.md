@@ -4,7 +4,7 @@ This is a simple game example for the Movement network.
 
 ## Tutorial
 
-See the [Tutorial.md](./Tutorial.md) for a step-by-step guide on how to deploy your own version of this game.
+See the [tutorial](./Tutorial.md) for a step-by-step guide on how to deploy your own version of this game.
 
 ## Todos
 
