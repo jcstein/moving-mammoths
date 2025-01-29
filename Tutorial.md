@@ -94,11 +94,12 @@ cd ../frontend
 npm install
 ```
 
-2. Update the contract address and module name in `src/components/Scoreboard.tsx`:
+2. Update the module address and module name in `src/components/Scoreboard.tsx`:
 
 ```
 const MODULE_ADDRESS = "YOUR_MODULE_ADDRESS";
 const MODULE_NAME = "your_module_name";
+const TESTNET_API = "https://aptos.testnet.porto.movementlabs.xyz/v1";
 ```
 
 Replace `YOUR_MODULE_ADDRESS` with your module address and `your_module_name` with your module name. Example:
@@ -108,7 +109,7 @@ const MODULE_ADDRESS = "0xe69c0875d4e04984cfc02b661d2d61fd12a2835347703b0a21efef
 const MODULE_NAME = "moving_mammoths";
 ```
 
-To see the contract address details, run `movement move list` and find the name of your module to see the source, other information, and the empty scoreboard array. Example:
+To see the module address details, run `movement move list` and find the name of your module to see the source, other information, and the empty scoreboard array. Example:
 
 ```
 {
@@ -119,7 +120,7 @@ To see the contract address details, run `movement move list` and find the name 
     },
 ```
 
-3. Update the contract address and module name in `src/components/WalletContent.tsx`. Here's an example:
+3. Update the module address and module name in `src/components/WalletContent.tsx`. Here's an example:
 
 ```
 const MODULE_ADDRESS =
@@ -157,7 +158,9 @@ Use a service like Vercel or Fleek to host your frontend. Be careful to not expo
 - Check browser console for errors
 - Verify all environment variables are correct
 
-Next steps:
+## Next steps:
+
+1. [Sign up for Mammothon](https://mammothon.celestia.org)
 - Customize the game mechanics
 - Add your own assets
 - Modify the scoring system
